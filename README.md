@@ -1,63 +1,149 @@
-# Vitual Private Network (VPN)
 <p align="center">
-<img src="https://i.imgur.com/MntON5Q.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/pU5A58S.png" alt="Microsoft Active Directory Logo"/>
 </p>
 
-<h1>VPN - Prerequisites and Installation</h1>
-This tutorial covers the prerequisites and installation process for setting up and using a VPN..<br />
+<h1>On-premises Active Directory Deployed in the Cloud (Azure)</h1>
+This tutorial outlines the implementation of on-premises Active Directory within Azure Virtual Machines.<br />
 
 <h2>Environments and Technologies Used</h2>
 
-- A VPN (Proton VPN)
 - Microsoft Azure (Virtual Machines/Compute)
 - Remote Desktop
-- Internet Information Services (IIS)
+- Active Directory Domain Services
+- PowerShell
 
 <h2>Operating Systems Used </h2>
 
-- Windows 10</b> (21H2)
+- Windows Server 2022
+- Windows 10 (21H2)
 
-<h2>Installation Steps</h2>
+<h2>Deployment and Configuration Steps</h2>
 
 <p>
-<img src="https://i.imgur.com/WKnl1Gd.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/FiST5JT.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
-Create a Resource Group in Azure, then deploy a Windows 10 Virtual Machine within it. Once the VM is set up, use Remote Desktop Protocol (RDP) to log into the VM.
+We will create two virtual machines: one running Windows Server 2022, named DC-1, and the other running Windows 10, named Client1. Both VMs should be connected to the same virtual network (VNet). Next, we'll configure the IP address on the domain controller (DC-1), changing it from dynamic to static. This ensures the client machine can join the domain and use DC-1 as its DNS server.
 </p>
 <br />
 
 <p>
-<img src="https://i.imgur.com/qUT7bSY.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/wIfUJdl.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
-Once inside the VM, open a web browser and navigate to https://whatismyipaddress.com/. View the IP information displayed and record it in Notepad or on a piece of paper for later reference.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/fUjDc38.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<img src="https://i.imgur.com/o4XhJYA.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-On your personal computer, sign up for the free version of Proton VPN at https://account.protonvpn.com/signup?plan=free&language=en.
-Inside the VM, download and install the Proton VPN client. Log in to the client using your Proton VPN credentials at 
-https://account.protonvpn.com/login 
+Next, we'll RDP into the domain controller and disable the firewall for the domain, private, and public profiles. To do this, right-click the Windows symbol, select "Run," and type wf.msc. In the Windows Defender Firewall window, ensure the firewall is turned off for all profiles.
 </p>
 <br />
 
 <p>
-<img src="https://i.imgur.com/dLrsRDw.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/ER2Lw3V.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
-Sign in to the Proton VPN client using the credentials you created during account setup. Once logged in, click "Quick Connect" to automatically connect to a VPN server. Connecting to the VPN will mask your real IP address and encrypt your internet traffic, enhancing privacy and security.
+Next, we'll change the DNS server on Client1 to the static private IP address of DC-1 in the networking settings within the Azure portal. After making this change, restart the virtual machines to apply the new DNS configuration.
 </p>
 <br />
 
 <p>
-<img src="https://i.imgur.com/I1ozIdQ.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/0zFPyiA.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+<img src="https://i.imgur.com/xm02kle.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 </p>
 <p>
-Revisit https://whatismyipaddress.com/ and observe the changes in the IP information. Note how the IP now reflects the VPN server you connected to, demonstrating the VPN's effect.
+Following that, we'll RDP into the Client1 virtual machine and attempt to ping DC-1's IP address using PowerShell. This should be successful since we disabled DC-1's firewall, allowing the machine to respond to the ping. We'll use the ipconfig /all command on Client1 to confirm that DC-1 is configured as the DNS server for the virtual machine.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/oBYt50h.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Next, we'll install Active Directory Domain Services (AD DS) using the Server Manager on the domain controller.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/1UY0lrq.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+We'll promote DC-1 to a Domain Controller and set up a new forest with the domain name mydomain.com.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/lRyBbvA.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Next, we'll open Active Directory Users and Computers and create two organizational units, _EMPLOYEES and _ADMINS, by right-clicking mydomain.com, selecting New, and then choosing Organizational Unit.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/lj5a6an.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+In the Admins OU, we'll create a new user named Ken Doe with the username ken_admin. 
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/lHZsq7U.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Next, we'll add Ken Doe as a Domain Admin. Right-click the user, select Properties, navigate to the Member Of tab, and click Add. In the "Enter object names" field, type Domain Admins and press Enter to complete the process.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/x1tbaQ1.png height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Now, log out of DC-1 and reconnect using RDP with the credentials mydomain.com\ken_admin and the assigned password. This account will be used for all future logins to DC-1.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/sWL89qz.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Now, we'll join the domain from the Client1 VM. RDP into the system, right-click the Windows logo, select System, then click Rename this PC (Advanced). Next, click Change, select Domain, and enter the domain name mydomain.com. The VM will restart to apply the changes.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/wsOjP9T.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Go back to DC-1 and open Active Directory Users and Computers. Create another organizational unit named _CLIENTS under mydomain.com.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/HgTs346.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Next, log into the Client1 VM as ken_admin. Right-click the Windows logo, select System, then choose Remote Desktop. Click Select users that can remotely access this PC and add Domain Users to allow them RDP access to the VM.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/DoCgqOP.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+https://github.com/joshmadakor1/AD_PS/blob/master/Generate-Names-Create-Users.ps1 Log in to DC-1 as ken_admin and open PowerShell ISE as an administrator. Create a new file, paste the script into it, and execute it. Observe as the accounts are created automatically.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/Ca3ShWL.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+After running the script, open Active Directory Users and Computers (ADUC) and verify that the accounts have been created in the appropriate _EMPLOYEES organizational unit.
+</p>
+<br />
+
+<p>
+<img src="https://i.imgur.com/PWd6tW8.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+</p>
+<p>
+Lastly, log in to the Client1 VM using one of the user accounts created by the PowerShell script, with the username and default password Password1. After logging in, open PowerShell to verify that you are logged in as one of the script-created users.
 </p>
 <br />
