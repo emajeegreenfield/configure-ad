@@ -1,9 +1,14 @@
 <p align="center">
-<img src="https://i.imgur.com/pU5A58S.png" alt="Microsoft Active Directory Logo"/>
+<img src="https://i.imgur.com/pU5A58S.png" height="40%" width="70%"alt="Microsoft Active Directory Logo"/>
 </p>
 
-<h1>On-premises Active Directory Deployed in the Cloud (Azure)</h1>
+<h1>Configuring Active Directory (On-Premises) Within Azure</h1>
 This tutorial outlines the implementation of on-premises Active Directory within Azure Virtual Machines.<br />
+
+
+<!-- <h2>Video Demonstration</h2>
+
+- ### [YouTube: How to Deploy on-premises Active Directory within Azure Compute](https://www.youtube.com) -->
 
 <h2>Environments and Technologies Used</h2>
 
@@ -15,135 +20,215 @@ This tutorial outlines the implementation of on-premises Active Directory within
 <h2>Operating Systems Used </h2>
 
 - Windows Server 2022
-- Windows 10 (21H2)
+- Windows 10
+
+<h2>High-Level Deployment and Configuration Steps</h2>
+
+- Create Resources
+- Ensure Connectivity between the client and Domain Controller
+- Install Active Directory
+- Create an Admin and Normal User Account in AD
+- Join Client-1 to your domain (myadproject.com)
+- Setup Remote Desktop for non-administrative users on Client-1
+- Create additional users and attempt to log into client-1 with one of the users
 
 <h2>Deployment and Configuration Steps</h2>
-
+<br />
+<br />
+<h3 align="center">Setup Resources in Azure</h3>
+<br />
 <p>
-<img src="https://i.imgur.com/FiST5JT.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  Create the Domain Controller VM (Windows Server 2022) named “DC-1”:
 </p>
 <p>
-We will create two virtual machines: one running Windows Server 2022, named DC-1, and the other running Windows 10, named Client1. Both VMs should be connected to the same virtual network (VNet). Next, we'll configure the IP address on the domain controller (DC-1), changing it from dynamic to static. This ensures the client machine can join the domain and use DC-1 as its DNS server.
+  <img src="https://i.imgur.com/gaAzjvb.png" height="75%" width="100%" alt="resource group"/>
+  <img src="https://i.imgur.com/hubTfey.png" height="75%" width="100%" alt="vm ms server"/>
+</p>
+<p>
+  Create the Client VM (Windows 10) named “Client-1”. Use the same Resource Group and Vnet that was created in previous step:
+</p>
+<p>
+  <img src="https://i.imgur.com/XyEmv8f.png" height="75%" width="100%" alt="vm windows"/>
+</p>
+<p>
+  Set Domain Controller’s NIC Private IP address to be static:
+</p>
+<p>
+  <img src="https://i.imgur.com/KHU9kC4.png" height="75%" width="100%" alt="static ip"/>
+</p>
+<p>
+  Ensure that both VMs are in the same Vnet (you can check the topology with Network Watcher):
+</p>
+<p>
+  <img src="https://i.imgur.com/rFpHLdQ.png" height="75%" width="100%" alt="topology"/>
 </p>
 <br />
-
+<br />
+<h3 align="center">Ensure Connectivity between the client and Domain Controller</h3>
+<br />
 <p>
-<img src="https://i.imgur.com/wIfUJdl.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  Login to Client-1 with Remote Desktop and ping DC-1’s private IP address with ping -t <ip address> (perpetual ping):
 </p>
 <p>
-Next, we'll RDP into the domain controller and disable the firewall for the domain, private, and public profiles. To do this, right-click the Windows symbol, select "Run," and type wf.msc. In the Windows Defender Firewall window, ensure the firewall is turned off for all profiles.
+  <img src="https://i.imgur.com/bnPM9tX.png" height="75%" width="100%" alt="perpetual ping"/>
+</p>
+<p>
+  Login to the Domain Controller and enable ICMPv4 in on the local windows firewall:
+</p>
+<p>
+  <img src="https://i.imgur.com/ZpPyEkt.png" height="75%" width="100%" alt="enable ICMPv4"/>
+</p>
+<p>
+  Check back at Client-1 to see the ping succeed:
+</p>
+<p>
+  <img src="https://i.imgur.com/8o3OfjY.png" height="75%" width="100%" alt="ping success"/>
 </p>
 <br />
-
+<br />
+<h3 align="center">Install Active Directory</h3>
+<br />
 <p>
-<img src="https://i.imgur.com/ER2Lw3V.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  Login to DC-1 and install Active Directory Domain Services:
 </p>
 <p>
-Next, we'll change the DNS server on Client1 to the static private IP address of DC-1 in the networking settings within the Azure portal. After making this change, restart the virtual machines to apply the new DNS configuration.
+  <img src="https://i.imgur.com/A1V9XJ5.png" height="75%" width="100%" alt="active directory install"/>
+</p>
+<p>
+  Promote as a Domain Controller:
+</p>
+<p>
+  <img src="https://i.imgur.com/zi15fw4.png" height="75%" width="100%" alt="domain controller promotion"/>
+</p>
+<p>
+  Setup a new forest as myactivedirectory.com (can be anything, just remember what it is - I ultimately did set it up as myadproject.com which you'll see in the next pic):
+</p>
+<p>
+  <img src="https://i.imgur.com/DCFUVrM.png" height="75%" width="100%" alt="set new forest"/>
+</p>
+<p>
+  Restart and then log back into DC-1 as user: myadproject.com\labuser:
+</p>
+<p>
+  <img src="https://i.imgur.com/7UakWMQ.png" height="75%" width="100%" alt="fqdn login"/>
 </p>
 <br />
-
+<br />
+<h3 align="center">Create an Admin and Normal User Account in AD</h3>
+<br />
 <p>
-<img src="https://i.imgur.com/0zFPyiA.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-<img src="https://i.imgur.com/xm02kle.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  In Active Directory Users and Computers (ADUC), create an Organizational Unit (OU) called “_EMPLOYEES” and another one called "_ADMINS":
 </p>
 <p>
-Following that, we'll RDP into the Client1 virtual machine and attempt to ping DC-1's IP address using PowerShell. This should be successful since we disabled DC-1's firewall, allowing the machine to respond to the ping. We'll use the ipconfig /all command on Client1 to confirm that DC-1 is configured as the DNS server for the virtual machine.
+  <img src="https://i.imgur.com/cYmv0r7.png" height="75%" width="100%" alt="organizational unit"/>
+  <img src="https://i.imgur.com/v02CBPI.png" height="75%" width="100%" alt="organizational unit"/>
+</p>
+<p>
+  Create a new employee named “Jane Doe” with the username of “jane_admin”:
+</p>
+<p>
+  <img src="https://i.imgur.com/h546E6L.png" height="75%" width="100%" alt="admin creation"/>
+</p>
+<p>
+  Add jane_admin to the “Domain Admins” Security Group:
+</p>
+<p>
+  <img src="https://i.imgur.com/mnLwTgq.png" height="75%" width="100%" alt="security group"/>
+</p>
+<p>  
+  Log out/close the Remote Desktop connection to DC-1 and log back in as “myadproject.com\jane_admin”. Use jane_admin as your admin account from now on:
+</p>
+<p>
+  <img src="https://i.imgur.com/xWZ4Kol.png" height="75%" width="100%" alt="admin login"/>
 </p>
 <br />
-
+<br />
+<h3 align="center">Join Client-1 to your domain (myadproject.com)</h3>
+<br />
 <p>
-<img src="https://i.imgur.com/oBYt50h.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  From the Azure Portal, set Client-1’s DNS settings to the DC’s Private IP address:
 </p>
 <p>
-Next, we'll install Active Directory Domain Services (AD DS) using the Server Manager on the domain controller.
+  <img src="https://i.imgur.com/1KRsjI6.png" height="75%" width="100%" alt="client dns settings"/>
+</p>
+<p>
+  From the Azure Portal, restart Client-1.
+</p>
+<p>
+  Login to Client-1 (Remote Desktop) as the original local admin (labuser) and join it to the domain (computer will restart):
+</p>
+<p>
+  <img src="https://i.imgur.com/50wszcP.png" height="75%" width="100%" alt="domain joining"/>
+</p>
+<p>
+  Login to the Domain Controller (Remote Desktop) and verify Client-1 shows up in Active Directory Users and Computers (ADUC) inside the “Computers” container on the root of the domain.
+</p>
+<p>
+  Create a new OU named “_CLIENTS” and drag Client-1 into there:
+</p>
+<p>
+  <img src="https://i.imgur.com/vB1n9m0.png" height="75%" width="100%" alt="active directory client verification"/>
 </p>
 <br />
-
+<br />
+<h3 align="center">Setup Remote Desktop for non-administrative users on Client-1</h3>
+<br />
 <p>
-<img src="https://i.imgur.com/1UY0lrq.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  Log into Client-1 as mydomain.com\jane_admin and open system properties.
 </p>
 <p>
-We'll promote DC-1 to a Domain Controller and set up a new forest with the domain name mydomain.com.
+  Click “Remote Desktop”.
+</p>
+<p>
+  Allow “domain users” access to remote desktop.
+</p>
+<p>
+  You can now log into Client-1 as a normal, non-administrative user now.
+</p>
+<p>
+  Normally you’d want to do this with Group Policy that allows you to change MANY systems at once (maybe a future lab):
+</p>
+<p>
+  <img src="https://i.imgur.com/8BfpT3s.png" height="75%" width="100%" alt="remote desktop setup"/>
 </p>
 <br />
-
+<br />
+<h3 align="center">Create a bunch of additional users and attempt to log into client-1 with one of the users</h3>
+<br />
 <p>
-<img src="https://i.imgur.com/lRyBbvA.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  Login to DC-1 as jane_admin
 </p>
 <p>
-Next, we'll open Active Directory Users and Computers and create two organizational units, _EMPLOYEES and _ADMINS, by right-clicking mydomain.com, selecting New, and then choosing Organizational Unit.
+  Open PowerShell_ise as an administrator.
+</p> 
+<p>  
+  Create a new File and paste the contents of this script (https://github.com/Xinloiazn/configure-ad/blob/main/adscript.ps1) into it:
+</p>
+<p>
+  <img src="https://i.imgur.com/0i8uApf.png" height="75%" width="100%" alt="create users script"/>
+</p>
+<p>
+  Run the script and observe the accounts being created:
+</p>
+<p>
+  <img src="https://i.imgur.com/6QOGzs6.png" height="75%" width="100%" alt="observe create users script"/>
+</p>
+<p>
+  When finished, open ADUC and observe the accounts in the appropriate OU and attempt to log into Client-1 with one of the accounts (take note of the password in the script):
+</p>
+<p>
+  <img src="https://i.imgur.com/ZZCfiCp.png" height="75%" width="100%" alt="employee user accounts"/>
+  <img src="https://i.imgur.com/7gBpNzN.png" height="75%" width="100%" alt="employee user selection"/>
+  <img src="https://i.imgur.com/cqsddjn.png" height="75%" width="100%" alt="employee user login"/>
 </p>
 <br />
-
-<p>
-<img src="https://i.imgur.com/lj5a6an.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-In the Admins OU, we'll create a new user named Ken Doe with the username ken_admin. 
-</p>
 <br />
-
 <p>
-<img src="https://i.imgur.com/lHZsq7U.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  I hope this tutorial helped you learn a little bit about network security protocols and observe traffic between virtual machines. This can be easily done on a PC or a Mac. Mac would just have an extra step to download the Remote Desktop App.
 </p>
 <p>
-Next, we'll add Ken Doe as a Domain Admin. Right-click the user, select Properties, navigate to the Member Of tab, and click Add. In the "Enter object names" field, type Domain Admins and press Enter to complete the process.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/x1tbaQ1.png height="80%" width="80%" alt="Disk Sanitization Steps"/>
+  Now that we're done, DON'T FORGET TO CLEAN UP YOUR AZURE ENVIRONMENT so that you don't incur unnecessary charges.
 </p>
 <p>
-Now, log out of DC-1 and reconnect using RDP with the credentials mydomain.com\ken_admin and the assigned password. This account will be used for all future logins to DC-1.
+  Close your Remote Desktop connection, delete the Resource Group(s) created at the beginning of this tutorial, and verify Resource Group deletion.
 </p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/sWL89qz.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Now, we'll join the domain from the Client1 VM. RDP into the system, right-click the Windows logo, select System, then click Rename this PC (Advanced). Next, click Change, select Domain, and enter the domain name mydomain.com. The VM will restart to apply the changes.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/wsOjP9T.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Go back to DC-1 and open Active Directory Users and Computers. Create another organizational unit named _CLIENTS under mydomain.com.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/HgTs346.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Next, log into the Client1 VM as ken_admin. Right-click the Windows logo, select System, then choose Remote Desktop. Click Select users that can remotely access this PC and add Domain Users to allow them RDP access to the VM.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/DoCgqOP.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-https://github.com/joshmadakor1/AD_PS/blob/master/Generate-Names-Create-Users.ps1 Log in to DC-1 as ken_admin and open PowerShell ISE as an administrator. Create a new file, paste the script into it, and execute it. Observe as the accounts are created automatically.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/Ca3ShWL.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-After running the script, open Active Directory Users and Computers (ADUC) and verify that the accounts have been created in the appropriate _EMPLOYEES organizational unit.
-</p>
-<br />
-
-<p>
-<img src="https://i.imgur.com/PWd6tW8.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
-</p>
-<p>
-Lastly, log in to the Client1 VM using one of the user accounts created by the PowerShell script, with the username and default password Password1. After logging in, open PowerShell to verify that you are logged in as one of the script-created users.
-</p>
-<br />
