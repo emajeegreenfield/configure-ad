@@ -81,20 +81,23 @@ This tutorial outlines the implementation of on-premises Active Directory within
   <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/cdfe74b6-f826-47f7-a740-a81af8d473f6" />
   <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/2c6ce208-6a7b-414b-b590-f1a3a562c01b" />
 </p>
-<br />
-<br />
-<h3 align="center">Install Active Directory</h3>
-<br />
 <p>
   Login to Client-1 with the Windows app using it's public IP address:
 </p>
 <p>
   <img width="936" height="1068" alt="image" src="https://github.com/user-attachments/assets/419b077c-75d9-456d-9873-d8442580a725" />
 </p>
-  Login to DC-1 and install Active Directory Domain Services:
+Open Powershell and ping DC-1's private IP address > Run "ipconfig /all" and DNS Servers should match:
 </p>
 <p>
-  <img src="https://i.imgur.com/A1V9XJ5.png" height="75%" width="100%" alt="active directory install"/>
+  <img width="1954" height="1018" alt="image" src="https://github.com/user-attachments/assets/2ad14f3e-e80e-4879-9d51-c7943ce0ab0e" />
+  <img width="1954" height="1018" alt="image" src="https://github.com/user-attachments/assets/f5718c92-89bd-4d6a-8b1e-76d9651ba5d4" />
+</p>
+<h3 align="center">Install Active Directory</h3>
+<br />  Login to DC-1 and install Active Directory Domain Services:
+</p>
+<p>
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/9c2d4d99-d01f-49e6-a39b-fc58c009bfbc" />
 </p>
 <p>
   Promote as a Domain Controller:
@@ -103,16 +106,16 @@ This tutorial outlines the implementation of on-premises Active Directory within
   <img src="https://i.imgur.com/zi15fw4.png" height="75%" width="100%" alt="domain controller promotion"/>
 </p>
 <p>
-  Setup a new forest as myactivedirectory.com (can be anything, just remember what it is - I ultimately did set it up as myadproject.com which you'll see in the next pic):
+  Setup a new forest such as mydomain.com (can be anything, just remember what it is):
 </p>
 <p>
-  <img src="https://i.imgur.com/DCFUVrM.png" height="75%" width="100%" alt="set new forest"/>
+  <img width="1516" height="1018" alt="image" src="https://github.com/user-attachments/assets/438132fa-a430-486f-8c43-73a675630836" />
 </p>
 <p>
-  Restart and then log back into DC-1 as user: myadproject.com\labuser:
+  Restart and then log back into DC-1 as user: mydomain.com\labuser:
 </p>
 <p>
-  <img src="https://i.imgur.com/7UakWMQ.png" height="75%" width="100%" alt="fqdn login"/>
+  <img width="880" height="472" alt="image" src="https://github.com/user-attachments/assets/d169dc5b-fc1c-47d3-a355-834e6033ced3" />
 </p>
 <br />
 <br />
@@ -129,47 +132,38 @@ This tutorial outlines the implementation of on-premises Active Directory within
   Create a new employee named “Jane Doe” with the username of “jane_admin”:
 </p>
 <p>
-  <img src="https://i.imgur.com/h546E6L.png" height="75%" width="100%" alt="admin creation"/>
+  <img width="1502" height="1054" alt="image" src="https://github.com/user-attachments/assets/0ed26adf-2b41-4333-bd0b-a80587fb3ff7" />
 </p>
 <p>
   Add jane_admin to the “Domain Admins” Security Group:
 </p>
 <p>
-  <img src="https://i.imgur.com/mnLwTgq.png" height="75%" width="100%" alt="security group"/>
+  <img width="1502" height="1054" alt="image" src="https://github.com/user-attachments/assets/37a6b92c-2139-419e-aa5b-dc02d7c6500f" />
 </p>
 <p>  
-  Log out/close the Remote Desktop connection to DC-1 and log back in as “myadproject.com\jane_admin”. Use jane_admin as your admin account from now on:
+  Log out of DC-1 and log back in as “mydomain.com\jane_admin”:
 </p>
 <p>
-  <img src="https://i.imgur.com/xWZ4Kol.png" height="75%" width="100%" alt="admin login"/>
+  <img width="880" height="474" alt="image" src="https://github.com/user-attachments/assets/830ddb61-82cf-43aa-88ff-b043dbeca9f3" />
 </p>
 <br />
 <br />
-<h3 align="center">Join Client-1 to your domain (myadproject.com)</h3>
+<h3 align="center">Join Client-1 to your domain </h3>
 <br />
 <p>
-  From the Azure Portal, set Client-1’s DNS settings to the DC’s Private IP address:
+  Login to Client-1 as the original local admin (labuser) and join it to the domain:
 </p>
 <p>
-  <img src="https://i.imgur.com/1KRsjI6.png" height="75%" width="100%" alt="client dns settings"/>
+  <img width="644" height="870" alt="image" src="https://github.com/user-attachments/assets/f0dc1797-9132-440c-9260-d77eb7e51f04" />
 </p>
 <p>
-  From the Azure Portal, restart Client-1.
-</p>
-<p>
-  Login to Client-1 (Remote Desktop) as the original local admin (labuser) and join it to the domain (computer will restart):
-</p>
-<p>
-  <img src="https://i.imgur.com/50wszcP.png" height="75%" width="100%" alt="domain joining"/>
-</p>
-<p>
-  Login to the Domain Controller (Remote Desktop) and verify Client-1 shows up in Active Directory Users and Computers (ADUC) inside the “Computers” container on the root of the domain.
+  Login to the Domain Controller and verify Client-1 shows up in Active Directory Users and Computers (ADUC) inside the “Computers” container on the root of the domain.
 </p>
 <p>
   Create a new OU named “_CLIENTS” and drag Client-1 into there:
 </p>
 <p>
-  <img src="https://i.imgur.com/vB1n9m0.png" height="75%" width="100%" alt="active directory client verification"/>
+  <img width="1502" height="1052" alt="image" src="https://github.com/user-attachments/assets/057994e5-2596-47fc-bbd3-f6da3fb66ab9" />
 </p>
 <br />
 <br />
@@ -188,10 +182,8 @@ This tutorial outlines the implementation of on-premises Active Directory within
   You can now log into Client-1 as a normal, non-administrative user now.
 </p>
 <p>
-  Normally you’d want to do this with Group Policy that allows you to change MANY systems at once (maybe a future lab):
-</p>
 <p>
-  <img src="https://i.imgur.com/8BfpT3s.png" height="75%" width="100%" alt="remote desktop setup"/>
+  <img width="2044" height="1596" alt="image" src="https://github.com/user-attachments/assets/b9aafe2b-a20d-482a-ad70-eb4bd7a98c30" />
 </p>
 <br />
 <br />
@@ -204,33 +196,20 @@ This tutorial outlines the implementation of on-premises Active Directory within
   Open PowerShell_ise as an administrator.
 </p> 
 <p>  
-  Create a new File and paste the contents of this script (https://github.com/Xinloiazn/configure-ad/blob/main/adscript.ps1) into it:
+  Create a new File and paste the contents of this script (https://github.com/Xinloiazn/configure-ad/blob/main/adscript.ps1) into it > Run the script:
 </p>
 <p>
-  <img src="https://i.imgur.com/0i8uApf.png" height="75%" width="100%" alt="create users script"/>
-</p>
-<p>
-  Run the script and observe the accounts being created:
-</p>
-<p>
-  <img src="https://i.imgur.com/6QOGzs6.png" height="75%" width="100%" alt="observe create users script"/>
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/5b9a4d72-5ac9-4f1d-b14b-559e031be8a9" />
 </p>
 <p>
   When finished, open ADUC and observe the accounts in the appropriate OU and attempt to log into Client-1 with one of the accounts (take note of the password in the script):
 </p>
 <p>
-  <img src="https://i.imgur.com/ZZCfiCp.png" height="75%" width="100%" alt="employee user accounts"/>
-  <img src="https://i.imgur.com/7gBpNzN.png" height="75%" width="100%" alt="employee user selection"/>
-  <img src="https://i.imgur.com/cqsddjn.png" height="75%" width="100%" alt="employee user login"/>
+  <img width="1502" height="1052" alt="image" src="https://github.com/user-attachments/assets/8dbacfb4-53d4-4fe1-8e30-a7362e8ad667" />
+  <img width="880" height="468" alt="image" src="https://github.com/user-attachments/assets/438c4a4e-46a9-4be9-bd4b-889600ca738a" />
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/9aa25f22-9a03-4c8d-83c0-d9d1933eb367" />
 </p>
 <br />
 <br />
 <p>
-  I hope this tutorial helped you learn a little bit about network security protocols and observe traffic between virtual machines. This can be easily done on a PC or a Mac. Mac would just have an extra step to download the Remote Desktop App.
-</p>
-<p>
-  Now that we're done, DON'T FORGET TO CLEAN UP YOUR AZURE ENVIRONMENT so that you don't incur unnecessary charges.
-</p>
-<p>
-  Close your Remote Desktop connection, delete the Resource Group(s) created at the beginning of this tutorial, and verify Resource Group deletion.
-</p>
+  
