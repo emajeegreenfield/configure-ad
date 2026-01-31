@@ -37,7 +37,7 @@ This tutorial outlines the implementation of on-premises Active Directory within
 <h3 align="center">Setup Resources in Azure</h3>
 <br />
 <p>
-  Create the Domain Controller VM (Windows Server 2022) named “dc-1" and ensure to use the vnet you created:
+  Create the Domain Controller VM (Windows Server 2025) named “dc-1" and ensure to use the vnet you created:
 </p>
 <p>
   <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/01dfd6e4-84f2-47d2-9368-1ec554d88720" />
@@ -45,7 +45,7 @@ This tutorial outlines the implementation of on-premises Active Directory within
   <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/fc21e88d-3efd-4a7c-9d7c-43a59f1f9523" />
 </p>
 <p>
-  Create the Client VM (Windows 10) named “Client-1”. Use the same Resource Group and Vnet that was created in previous step:
+  Create the Client VM (Windows 11) named “Client-1”. Use the same Resource Group and Vnet that was created in previous step:
 </p>
 <p>
   <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/49135889-3ae3-446b-b243-d5d1da14572d" />
@@ -100,13 +100,7 @@ Open Powershell and ping DC-1's private IP address > Run "ipconfig /all" and DNS
   <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/9c2d4d99-d01f-49e6-a39b-fc58c009bfbc" />
 </p>
 <p>
-  Promote as a Domain Controller:
-</p>
-<p>
-  <img src="https://i.imgur.com/zi15fw4.png" height="75%" width="100%" alt="domain controller promotion"/>
-</p>
-<p>
-  Setup a new forest such as mydomain.com (can be anything, just remember what it is):
+  Promote as a Domain Controller by clicking the flag in upper right corner > Setup a new forest such as mydomain.com (can be anything, just remember what it is):
 </p>
 <p>
   <img width="1516" height="1018" alt="image" src="https://github.com/user-attachments/assets/438132fa-a430-486f-8c43-73a675630836" />
@@ -125,8 +119,7 @@ Open Powershell and ping DC-1's private IP address > Run "ipconfig /all" and DNS
   In Active Directory Users and Computers (ADUC), create an Organizational Unit (OU) called “_EMPLOYEES” and another one called "_ADMINS":
 </p>
 <p>
-  <img src="https://i.imgur.com/cYmv0r7.png" height="75%" width="100%" alt="organizational unit"/>
-  <img src="https://i.imgur.com/v02CBPI.png" height="75%" width="100%" alt="organizational unit"/>
+  <img width="2566" height="956" alt="image" src="https://github.com/user-attachments/assets/7308cea1-73f3-45eb-a624-ca6ad1e1ec3e" />
 </p>
 <p>
   Create a new employee named “Jane Doe” with the username of “jane_admin”:
