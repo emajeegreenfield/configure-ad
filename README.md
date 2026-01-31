@@ -21,16 +21,6 @@ This tutorial outlines the implementation of on-premises Active Directory within
 - Windows Server 2025
 - Windows 11
 
-<h2>High-Level Deployment and Configuration Steps</h2>
-
-- Create Resources
-- Ensure Connectivity between the client and Domain Controller
-- Install Active Directory
-- Create an Admin and Normal User Account in AD
-- Join Client-1 to your domain (myadproject.com)
-- Setup Remote Desktop for non-administrative users on Client-1
-- Create additional users and attempt to log into client-1 with one of the users
-
 <h2>Deployment and Configuration Steps</h2>
 <br />
 <br />
