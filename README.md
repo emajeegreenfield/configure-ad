@@ -6,21 +6,20 @@
 This tutorial outlines the implementation of on-premises Active Directory within Azure Virtual Machines.<br />
 
 
-<!-- <h2>Video Demonstration</h2>
 
-- ### [YouTube: How to Deploy on-premises Active Directory within Azure Compute](https://www.youtube.com) -->
+
 
 <h2>Environments and Technologies Used</h2>
 
 - Microsoft Azure (Virtual Machines/Compute)
-- Remote Desktop
+- Windows App (MacOS)
 - Active Directory Domain Services
 - PowerShell
 
 <h2>Operating Systems Used </h2>
 
-- Windows Server 2022
-- Windows 10
+- Windows Server 2025
+- Windows 11
 
 <h2>High-Level Deployment and Configuration Steps</h2>
 
@@ -38,57 +37,60 @@ This tutorial outlines the implementation of on-premises Active Directory within
 <h3 align="center">Setup Resources in Azure</h3>
 <br />
 <p>
-  Create the Domain Controller VM (Windows Server 2022) named “DC-1”:
+  Create the Domain Controller VM (Windows Server 2022) named “dc-1" and ensure to use the vnet you created:
 </p>
 <p>
-  <img src="https://i.imgur.com/gaAzjvb.png" height="75%" width="100%" alt="resource group"/>
-  <img src="https://i.imgur.com/hubTfey.png" height="75%" width="100%" alt="vm ms server"/>
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/01dfd6e4-84f2-47d2-9368-1ec554d88720" />
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/77b71f82-acc9-43f4-838b-007727859646" />
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/fc21e88d-3efd-4a7c-9d7c-43a59f1f9523" />
 </p>
 <p>
   Create the Client VM (Windows 10) named “Client-1”. Use the same Resource Group and Vnet that was created in previous step:
 </p>
 <p>
-  <img src="https://i.imgur.com/XyEmv8f.png" height="75%" width="100%" alt="vm windows"/>
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/49135889-3ae3-446b-b243-d5d1da14572d" />
 </p>
 <p>
   Set Domain Controller’s NIC Private IP address to be static:
 </p>
 <p>
-  <img src="https://i.imgur.com/KHU9kC4.png" height="75%" width="100%" alt="static ip"/>
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/593b5f94-a02f-4f49-b38c-c39070120489" />
 </p>
 <p>
-  Ensure that both VMs are in the same Vnet (you can check the topology with Network Watcher):
-</p>
+  
 <p>
-  <img src="https://i.imgur.com/rFpHLdQ.png" height="75%" width="100%" alt="topology"/>
-</p>
 <br />
 <br />
 <h3 align="center">Ensure Connectivity between the client and Domain Controller</h3>
 <br />
 <p>
-  Login to Client-1 with Remote Desktop and ping DC-1’s private IP address with ping -t <ip address> (perpetual ping):
+  Login to dc-1 with the Windows app using it's public IP address:
 </p>
 <p>
-  <img src="https://i.imgur.com/bnPM9tX.png" height="75%" width="100%" alt="perpetual ping"/>
+  <img width="936" height="1068" alt="image" src="https://github.com/user-attachments/assets/c63724c3-eef3-473c-83c4-8c35415d2fca" />
+</p>
+<p> Right click Start menu and run "wf.msc" > Click Windows Defender Firewall Properties > Turn off all firewall settings:
 </p>
 <p>
-  Login to the Domain Controller and enable ICMPv4 in on the local windows firewall:
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/c63fb34b-17be-46ac-9a21-da2bc9038af1" />
 </p>
 <p>
-  <img src="https://i.imgur.com/ZpPyEkt.png" height="75%" width="100%" alt="enable ICMPv4"/>
+  Set Client-1's DNS settings to DC-1's private IP address and restart Client-1:
 </p>
 <p>
-  Check back at Client-1 to see the ping succeed:
-</p>
-<p>
-  <img src="https://i.imgur.com/8o3OfjY.png" height="75%" width="100%" alt="ping success"/>
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/cdfe74b6-f826-47f7-a740-a81af8d473f6" />
+  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/2c6ce208-6a7b-414b-b590-f1a3a562c01b" />
 </p>
 <br />
 <br />
 <h3 align="center">Install Active Directory</h3>
 <br />
 <p>
+  Login to Client-1 with the Windows app using it's public IP address:
+</p>
+<p>
+  <img width="936" height="1068" alt="image" src="https://github.com/user-attachments/assets/419b077c-75d9-456d-9873-d8442580a725" />
+</p>
   Login to DC-1 and install Active Directory Domain Services:
 </p>
 <p>
