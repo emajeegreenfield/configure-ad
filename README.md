@@ -30,21 +30,21 @@ This tutorial outlines the implementation of on-premises Active Directory within
   Create the Domain Controller VM (Windows Server 2025) named “dc-1" and ensure to use the vnet you created:
 </p>
 <p>
-  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/01dfd6e4-84f2-47d2-9368-1ec554d88720" />
-  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/77b71f82-acc9-43f4-838b-007727859646" />
-  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/fc21e88d-3efd-4a7c-9d7c-43a59f1f9523" />
+  <img width="1660" height="936" alt="image" src="https://github.com/user-attachments/assets/bb5bd6fd-d545-4978-b67d-0d35e085389e" />
+  <img width="1660" height="988" alt="image" src="https://github.com/user-attachments/assets/f908f65a-1556-48e9-a38c-9b7613d9f27c" />
+  <img width="1660" height="936" alt="image" src="https://github.com/user-attachments/assets/9748bf13-1cf7-42df-8b30-eafb2eff61ac" />
 </p>
 <p>
   Create the Client VM (Windows 11) named “Client-1”. Use the same Resource Group and Vnet that was created in previous step:
 </p>
 <p>
-  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/49135889-3ae3-446b-b243-d5d1da14572d" />
+  <img width="1660" height="936" alt="image" src="https://github.com/user-attachments/assets/025dac16-1418-4b8e-a625-a6d6896b588b" />
 </p>
 <p>
   Set Domain Controller’s NIC Private IP address to be static:
 </p>
 <p>
-  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/593b5f94-a02f-4f49-b38c-c39070120489" />
+  <img width="1660" height="936" alt="image" src="https://github.com/user-attachments/assets/a7dd9480-3de5-4aca-b65f-ff6558c948ee" />
 </p>
 <p>
   
@@ -68,8 +68,8 @@ This tutorial outlines the implementation of on-premises Active Directory within
   Set Client-1's DNS settings to DC-1's private IP address and restart Client-1:
 </p>
 <p>
-  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/cdfe74b6-f826-47f7-a740-a81af8d473f6" />
-  <img width="2880" height="1800" alt="image" src="https://github.com/user-attachments/assets/2c6ce208-6a7b-414b-b590-f1a3a562c01b" />
+  <img width="1660" height="936" alt="image" src="https://github.com/user-attachments/assets/967ebc3b-b666-4546-bdaf-852ac17794c7" />
+  <img width="1660" height="936" alt="image" src="https://github.com/user-attachments/assets/e41337f3-c44a-49d9-8774-54f17c50e351" />
 </p>
 <p>
   Login to Client-1 with the Windows app using it's public IP address:
